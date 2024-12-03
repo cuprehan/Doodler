@@ -14,6 +14,7 @@ class DoodleView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private val paint = Paint()
     private val path = Path()
     private val paths = mutableListOf<Pair<Path, Paint>>()
+    private val redoPaths = mutableListOf<Pair<Path, Paint>>()
 
     init {
         val attributes = context.obtainStyledAttributes(attrs, R.styleable.DoodleView)
@@ -41,6 +42,7 @@ class DoodleView(context: Context, attrs: AttributeSet) : View(context, attrs) {
             MotionEvent.ACTION_UP -> {
                 paths.add(Pair(Path(path), Paint(paint)))
                 path.reset()
+                redoPaths.clear()
             }
         }
         invalidate()
@@ -49,12 +51,20 @@ class DoodleView(context: Context, attrs: AttributeSet) : View(context, attrs) {
 
     fun clear() {
         paths.clear()
+        redoPaths.clear()
         invalidate()
     }
 
     fun undo() {
         if (paths.isNotEmpty()) {
-            paths.removeAt(paths.size - 1)
+            redoPaths.add(paths.removeAt(paths.size - 1))
+            invalidate()
+        }
+    }
+
+    fun redo() {
+        if (redoPaths.isNotEmpty()) {
+            paths.add(redoPaths.removeAt(redoPaths.size - 1))
             invalidate()
         }
     }

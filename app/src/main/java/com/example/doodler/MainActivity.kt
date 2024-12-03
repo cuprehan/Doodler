@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         redoButton.setOnClickListener {
-            // TBD
+            doodleView.redo()
         }
     }
 }
